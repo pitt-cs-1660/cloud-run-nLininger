@@ -24,14 +24,43 @@ async def read_root(request: Request):
 
     # stream all votes; count tabs / spaces votes, and get recent votes
 
+    # streaming all votes
+    votes = votes_collection.stream()
+
+    # variables to hold vote counts
+    recent_votes = []
+    spaces_count = 0
+    tabs_count = 0
+
+    # counting votes logic
+    for vote in votes:
+        
+        # format vote data
+        vote_data = vote.to_dict()
+        
+        # determine if vote is tab or space, then tabulate the vote
+        if vote_data["team"] == "TABS":
+            tabs_count += 1
+        elif vote_data["team"] == "SPACES":
+            spaces_count += 1
+        
+        # store vote in recent votes
+        recent_votes.append({
+            "team": vote_data["team"],
+            "time_cast": vote_data["time_cast"]
+        })
+
+    # format recent votes to record first 5 in desc order
+    recent_votes = sorted(recent_votes, key=lambda x: x["time_cast"], reverse=True)[:5]
+    
     # ====================================
     # ++++ STOP CODE ++++
     # ====================================
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "tabs_count": 0,
-        "spaces_count": 0,
-        "recent_votes": []
+        "tabs_count": tabs_count,
+        "spaces_count": spaces_count,
+        "recent_votes": recent_votes
     })
 
 
@@ -44,8 +73,15 @@ async def create_vote(team: Annotated[str, Form()]):
     # ++++ START CODE HERE ++++
     # ====================================
 
+    # create vote and store in Firestore
+    vote_data = {
+        "team": team,
+        "time_cast": datetime.datetime.utcnow().isoformat()
+    }
+    votes_collection.add(vote_data)
+
     # create a new vote document in firestore
-    return {"detail": "Not implemented yet!"}
+    return {"detail": "Vote creation success!"}
 
     # ====================================
     # ++++ STOP CODE ++++
