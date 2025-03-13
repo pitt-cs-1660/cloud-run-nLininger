@@ -17,3 +17,5 @@ const config = {
   apiKey: 'AIzaSyDboeb0oC-30asZaTck001DXNqNu2ikmfA',
   authDomain: 'silent-emissary-451416-u5.firebaseapp.com',
 };
+
+export default firebaseConfig;
