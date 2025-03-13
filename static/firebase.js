@@ -120,8 +120,28 @@ async function vote(team) {
       /*
        * ++++ YOUR CODE HERE ++++
        */
-      window.alert(`Not implemented yet!`);
 
+      // send post request to FastAPI Backend
+      const response = await fetch("/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Bearer ${token}`
+        },
+        body: `team=${team}`
+      })
+
+      //window.alert(`Not implemented yet!`);
+
+      // handle response
+      if (response.ok) {
+        console.log(`Vote for team: ${team} submitted successfully!`)
+        window.alert(`Vote for team: ${team} submitted successfully!`) //success alert
+      }
+      else {
+        console.error(`Vote failed: ${response.statusText}`)
+        window.alert(`Error submitting vote, please try again.`) //failure alert
+      }
     } catch (err) {
       console.log(`Error when submitting vote: ${err}`);
       window.alert('Something went wrong... Please try again!');
