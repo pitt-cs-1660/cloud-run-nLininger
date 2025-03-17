@@ -18,4 +18,3 @@ const config = {
   authDomain: 'silent-emissary-451416-u5.firebaseapp.com',
 };
 
-export default config;
